@@ -19,7 +19,6 @@ for i in range(n):
 while q:
     day, mon = q.popleft()
 
-    # 더이상 상담이 불가능한 경우
     if mon > answer:
         answer = mon
 
