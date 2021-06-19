@@ -29,24 +29,28 @@ import sys
 input = sys.stdin.readline
 
 n, s = map(int, input().split())
-nums = list(map(int, input().split()))
-answer = sys.maxsize
+arr = list(map(int, input().split()))
 
 start, end = 0, 0
-summary = nums[end]
-while end < n and start < n and start <= end :
+summary = arr[start]
+answer = sys.maxsize
+
+flag = False
+
+while start <= end:
     if summary < s:
-        end += 1
-        if end < n:
-            summary += nums[end]
+        if end < n-1:
+            end += 1
+            summary += arr[end]
+        else:
+            break
     else:
-        if answer > end - start:
-            answer = end - start
-        summary -= nums[start]
+        flag = True
+        answer = min(answer, end - start + 1)
+        summary -= arr[start]
         start += 1
 
-
-if answer == sys.maxsize:
-    print(0)
+if flag:
+    print(answer)
 else:
-    print(answer + 1)
+    print(0)
