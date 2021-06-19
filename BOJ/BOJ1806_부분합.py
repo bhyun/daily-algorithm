@@ -1,30 +1,3 @@
-### TLE
-# import copy
-# import sys
-# input = sys.stdin.readline
-#
-# n, s = map(int, input().split())
-# nums = list(map(int, input().split()))
-# answer = 0
-#
-# dp = copy.deepcopy(nums)
-# flag = False
-#
-# # 길이 2 ~ n
-# for length in range(2, n+1):
-#     for i in range(n-length+1):
-#         dp[i] = dp[i] + nums[i+length-1]
-#         if dp[i] >= s:
-#             flag = True
-#             break
-#
-#     if flag:
-#         answer = length
-#         break
-#
-# print(answer)
-
-### Two pointer
 import sys
 input = sys.stdin.readline
 
