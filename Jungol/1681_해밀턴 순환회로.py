@@ -3,7 +3,7 @@ input = sys.stdin.readline
 
 def dfs(x, y, cnt, cost):
     global ans
-    if cost > ans:
+    if cost > ans: # 백트래킹
         return
     if cnt == n-1:
         if board[y][0] != 0:
@@ -28,6 +28,6 @@ for i in range(1, n):
     if not visited[i] and board[0][i] != 0:
         visited[i] = True
         dfs(0, i, 1, board[0][i])
-        visited[i] = False
+        visited[i] = False # 백트래킹
 
 print(ans)
