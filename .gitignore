@@ -130,3 +130,6 @@ dmypy.json
 
 # relate pycharm
 .idea
+
+# Private directory
+CodingTest/
