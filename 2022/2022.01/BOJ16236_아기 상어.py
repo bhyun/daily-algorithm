@@ -1,90 +1,83 @@
+# 다시 풀기
+from collections import deque
 import sys
 input = sys.stdin.readline
-from collections import deque
 
-def check():
-    for i in range(n):
-        for j in range(n):
-            if 0 < graph[i][j] < shark:
-                return True
-    return False
+def get_fish(shark_x, shark_y, shark):
+    q = deque()
+    q.append((0, shark_x, shark_y))
 
-def bfs(originX, originY):
+    visited = [[False] * n for _ in range(n)]
+    visited[shark_x][shark_y] = True
+
     dx = [1, -1, 0, 0]
     dy = [0, 0, 1, -1]
 
-    q = deque()
-    q.append(((originX, originY), 0))
-    visited = [[False] * n for _ in range(n)]
-    visited[originX][originY] = True
-
-    candidates = []
-    standard = sys.maxsize
-
+    distance = sys.maxsize
+    result_x = sys.maxsize
+    result_y = sys.maxsize
+    flag = False
     while q:
-        (x, y), dist = q.popleft()
-        if dist > standard:
-            break
+        dist, x, y = q.popleft()
+
+        if dist > distance:
+            continue
 
         for i in range(4):
             nx = x + dx[i]
             ny = y + dy[i]
             if 0 <= nx < n and 0 <= ny < n and not visited[nx][ny]:
-                if graph[nx][ny] != 0 and graph[nx][ny] < shark:
-                    if dist + 1 > standard:
-                        continue
-                    standard = dist + 1
-                    candidates.append((nx, ny, dist + 1))
-                elif graph[nx][ny] == 0 or graph[nx][ny] == shark:
-                    q.append(((nx, ny), dist + 1))
                 visited[nx][ny] = True
+                if graph[nx][ny] == 0:
+                    q.append((dist + 1, nx, ny))
+                elif graph[nx][ny] == shark:
+                    q.append((dist + 1, nx, ny))
+                elif graph[nx][ny] < shark:
+                    if distance > dist + 1:
+                        distance = dist + 1
+                        result_x, result_y = nx, ny
+                        flag = True
 
-    if candidates:
-        candidates.sort(key=lambda x: (x[0], x[1]))
-        #print("후보: ", candidates)
-        return candidates[0][0], candidates[0][1], candidates[0][2]
-    return -1, -1, -1
+                    elif distance == dist + 1:
+                        if result_x > nx:
+                            result_x, result_y = nx, ny
+                        elif result_x == nx and result_y > ny:
+                            result_x, result_y = nx, ny
+
+    return flag, distance, result_x, result_y
 
 n = int(input())
 graph = []
 for _ in range(n):
     graph.append(list(map(int, input().split())))
 
-shark = 2
-second = 0
-fish = 0
-
-# 아기상어 위치 찾기
-posFlag = True
+shark_x, shark_y = -1, -1
+m = 0
 for i in range(n):
-    if not posFlag:
-        break
     for j in range(n):
-        if graph[i][j] == 9:
-            posX, posY = i, j
-            posFlag = False
-            break
+        if graph[i][j] in [1, 2, 3, 4, 5, 6]:
+            m += 1
+        elif graph[i][j] == 9:
+            shark_x, shark_y = i, j
 
-while True:
-    # 먹을 수 있는 물고기가 없으면 탐색하지 않는다.
-    if not check():
-        print(second)
+graph[shark_x][shark_y] = 0
+
+shark = 2
+fish = 0
+answer = 0
+while m > 0:
+    flag, distance, x, y = get_fish(shark_x, shark_y, shark)
+    if flag:
+        graph[x][y] = 0
+        answer += distance
+        shark_x = x
+        shark_y = y
+        fish += 1
+        if fish == shark:
+            shark += 1
+            fish = 0
+        m -= 1
+    else:
         break
 
-    minX, minY, minDistance = bfs(posX, posY)
-    #print("----minX, minY: ", minX, minY, "minDistance: ", minDistance )
-
-    if minX == -1 and minY == -1:
-        print(second)
-        break
-
-    fish += 1
-    second += minDistance
-
-    if fish == shark:
-        shark += 1
-        fish = 0
-    #print("fish: ", fish, "shark: ", shark, "second: ", second)
-    graph[posX][posY] = 0
-    graph[minX][minY] = 9
-    posX, posY = minX, minY
+print(answer)
