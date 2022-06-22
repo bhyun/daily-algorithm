@@ -58,12 +58,12 @@ for _ in range(4):
 
 q = deque()
 eat = graph[0][0]
-q.append((0, 0, dir_mapper[graph[0][0]], graph, dir_mapper, eat, [graph[0][0]]))
+q.append((0, 0, dir_mapper[graph[0][0]], graph, dir_mapper, eat))
 graph[0][0] = -1
 
 answer = 0
 while q:
-    x, y, dir, graph, dir_mapper, eat, path = q.popleft()
+    x, y, dir, graph, dir_mapper, eat = q.popleft()
 
     # 물고기 이동
     ng, nm = fish_move(graph, dir_mapper)
@@ -81,7 +81,7 @@ while q:
             ng_copy = deepcopy(ng)
             ng_copy[x][y] = 0  # 현재 상어 위치를 0으로 만들기
             ng_copy[nx][ny] = -1  # 상어 위치 이동
-            q.append((nx, ny, nm[eat_fish_id], ng_copy, nm, eat + eat_fish_id, path + [eat_fish_id]))
+            q.append((nx, ny, nm[eat_fish_id], ng_copy, nm, eat + eat_fish_id))
 
             cnt += 1
 
